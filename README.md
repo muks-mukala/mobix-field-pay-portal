@@ -1,6 +1,6 @@
 # Mobix Field Pay Portal: SMS-Driven Timecard Tracking & Analytics Pipeline
 
-## roject Overview
+## Project Overview
 In many operational field environments across Zambia, managing teams and tracking performance is incredibly difficult due to one major hurdle: a lack of internet access and smartphones. Most enterprise workforce tracking systems rely heavily on mobile apps or web forms. When field agents are forced to use basic feature phones due to mobile data costs or device limitations, management loses visibility. This leads to delayed payroll cycles, administrative paperwork bottlenecks, and zero daily transparency for the workers regarding what they have earned.
 
 The **Mobix Field Pay Portal** directly addresses this infrastructure gap. Built using **Python (Streamlit)** for the manager dashboard and **SQL (Supabase/PostgreSQL)** for the backend data warehouse, this application captures real-time clock-in and clock-out timestamps, handles complex data aggregations on the server side, and **democratizes operational data**. It compresses individual worked hours and calculated pay into clean text messages, sending automated payslips right to field workers' basic feature phones via SMS—requiring no smartphone or mobile data on the receiving end.
