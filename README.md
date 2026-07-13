@@ -1,20 +1,46 @@
-# Low-Resource Field Insights Tracker (SMS-to-Data Pipeline)
+# Mobix Pay Portal: Democratized Timecard Tracking & Low-Resource SMS Data Pipeline
 
-## Project Overview
-In many developing markets like Zambia, field teams operate in environments without reliable internet access or smartphones. Traditional data collection tools (like ODK or custom mobile apps) fail here because of mobile data costs and hardware limitations.
+## Mission Statement
+In emerging economies like Zambia, data transparency shouldn't require high-tier smartphones or costly mobile data bundles. Traditional operational tools alienate field agents without internet access, leading to administrative blind spots, delayed metrics, and suppressed team performance.
 
-This project is a functional, end-to-end data pipeline designed to bridge that gap. It manages operational data, processes workflows, and generates an administrative control center. Best of all, it features a custom communication gateway built to dispatch text-based insights directly back to field agents operating standard **non-smart feature phones** over standard cellular networks.
-
-### Core Impact
-* **Zero-Barrier Adherence:** Field agents require no internet data packages or smartphones to interact with the operational loop.
-* **Cost-Effective Scalability:** Leverages standard SMS architecture to digitize real-time ground tracking.
-* **Secure Data-Driven Decisions:** Centralizes disparate field milestones into a secure cloud system with a custom-styled modern dashboard.
+**Mobix Pay Portal** resolves these friction points by functioning as a high-impact, low-resource digital pipeline. It digitizes timecard metrics, tracks real-time shifts, and **democratizes data transparency** by broadcasting automated payroll summaries and worked hours directly to field agents via standard SMS to their non-smart feature phones.
 
 ---
 
-## Architecture & System Design
-The logic is fully modular and separated into dedicated functional layers to maintain clean, enterprise-grade codebase standards:
+## Core Functionality
+* **Real-Time Digital Punch Clock:** Enables managers to sign workers on/off shifts instantaneously, centralizing attendance data the moment it happens.
+* **Transparent Payroll Computations:** Dynamically aggregates total accumulated hours, hourly operational rates, and contextual shortage adjustments.
+* **Feature Phone Telecomm Gateway:** Translates administrative grid arrays into ultra-lean text blocks optimized for cellular networks, dispatching automated payslips without requiring internet access on the receiving end.
 
-1. **Presentation Layer (`app.py`):** A custom Web Application UI displaying secure portal authentication, live operational timecard metrics, deduction entry logs, and interactive date-filtered dataframes.
-2. **Database & Integration Engine (`src/db_utils.py`):** Acts as the transactional controller handling secure queries to cloud views, parsing operational metrics, and generating network-optimized payload blocks for SMS transmission.
-3. **Design
+---
+
+## Strategic Business Pain Points Resolved
+
+### 1. Reversing Sluggish Field Productivity
+* **The Pain Point:** Delayed visibility into attendance structures left management reactive, making it difficult to spot operational bottlenecks until weeks later.
+* **The Solution:** A centralized, live-updating Streamlit control portal. Managers observe shift distributions instantly as they populate, turning data into immediate operational oversight.
+
+### 2. Bridging the Digital Divide (The Smartphone / Data Gap)
+* **The Pain Point:** Field workers in localized zones frequently lack smartphones or steady internet configurations, excluding them from conventional workforce tracking applications.
+* **The Solution:** A backend pipeline linked directly to the Twilio SMS Gateway. This architecture drops vital financial accountability right into basic feature phone viewports over standard cellular frequencies.
+
+### 3. Structural Analytics for Gap Analysis
+* **The Pain Point:** Disconnected data silos make it nearly impossible to identify patterns of operational leakages, payroll errors, or human resource shortages.
+* **The Solution:** A clean backend data warehouse tied to automated database aggregation layers. Managers can export cleanly formatted time series files into CSV format for deep-dive exploratory data analysis (EDA) and capacity optimization.
+
+---
+
+## Technical Architecture & Component Mapping
+
+
+
+The repository is built following clean modular paradigms to maintain rigid separation between visual formatting and internal data calculations:
+
+```text
+├── src/
+│   ├── __init__.py       # Signals Python module parsing boundaries
+│   ├── db_utils.py       # Interacts with Supabase transactions & Twilio payloads
+│   └── styles.css        # Implements viewport layouts for dashboard uniformity
+├── app.py                # Serves as the interactive administrative interface
+├── requirements.txt      # Lists application infrastructure packages
+└── .gitignore            # Conceals local token configurations from public view
