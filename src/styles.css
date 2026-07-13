@@ -1,0 +1,64 @@
+/* 1. GLOBAL ROOT WORKSPACE STRUCTURAL BUFFER */
+[data-testid="stMain"], .main, .stAppDeployButton {
+    /* Pushes the absolute main canvas container down from the browser ceiling */
+    padding-top: 2rem !important; 
+}
+
+.main .block-container {
+    /* Keeps inner page content perfectly padded on the sides */
+    padding-top: 3.5rem !important;
+    padding-left: 5rem !important;
+    padding-right: 5rem !important;
+}
+
+/* 2. TOP HORIZONTAL TOOLBAR SHIELD */
+[data-testid="stHeader"] {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2.5rem;
+    background-color: var(--background-color, #ffffff) !important;
+    z-index: 99999 !important; 
+}
+
+/* 3. RESPONSIVE FIXED HEADING BANNER ENGINE */
+.sticky-heading {
+    position: fixed !important;
+    top: 2.5rem;
+    left: 0;
+    width: 100vw !important;
+    height: 5rem !important;
+    background-color: var(--background-color, #ffffff) !important;
+    border-bottom: 1px solid rgba(49, 51, 63, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    z-index: 99990 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 0 5rem !important;
+    transition: left 300ms, width 300ms;
+}
+
+[data-expanded="true"] ~ .main .sticky-heading {
+    left: 18rem !important;
+    width: calc(100vw - 18rem) !important;
+}
+
+.sticky-heading h1 {
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    font-size: 2.1rem !important;
+    font-weight: 700 !important;
+    color: var(--text-color, #31333F) !important;
+    line-height: 1.2 !important;
+    text-align: left !important;
+}
+
+/* 4. SIDEBAR NAVIGATION PANELS */
+[data-testid="stSidebarUserContent"] {
+    position: sticky !important;
+    top: 2rem;
+}
