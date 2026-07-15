@@ -1,4 +1,9 @@
+# Streamlit secrets (NEVER push these to GitHub)
 .streamlit/secrets.toml
+
+# Python virtual environments & caching
+venv/
+.venv/
 __pycache__/
-.env
-*.docx  
+*.pyc
+.DS_Store
