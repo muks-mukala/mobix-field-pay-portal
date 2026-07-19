@@ -1,4 +1,5 @@
 import streamlit as st
+import datetime  # Added to handle timestamps explicitly
 from supabase import create_client, Client
 from twilio.rest import Client as TwilioClient
 
@@ -31,20 +32,33 @@ def get_active_status(staff_id):
 
 def punch_in_staff(staff_id):
     """
-    Inserts a live timecard record. Bypasses old payroll_periods dependency.
+    Inserts a live timecard record with an explicit local CAT timestamp.
     """
+    # Explicitly generate current time with Central Africa Time offset (+02:00)
+    now_cat = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).isoformat()
+    
     return supabase.table("timecards").insert({
         "staff_id": staff_id, 
-        "is_active": True
+        "is_active": True,
+        "clock_in": now_cat  # Explicitly setting the clock-in timestamp
     }).execute()
 
 def punch_out_staff(staff_id):
     """
-    Flips the open timecard card to inactive, logging the clock-out event.
+    Flips the open timecard card to inactive, logging the explicit clock-out timestamp.
     """
     res = supabase.table("timecards").select("timecard_id").eq("staff_id", staff_id).eq("is_active", True).execute()
+    
     if res.data:
-        return supabase.table("timecards").update({"is_active": False}).eq("timecard_id", res.data[0]["timecard_id"]).execute()
+        # Explicitly generate current time with Central Africa Time offset (+02:00)
+        now_cat = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).isoformat()
+        
+        return supabase.table("timecards").update({
+            "is_active": False,
+            "clock_out": now_cat  # Fixed: Now passing the clock-out time to the database
+        }).eq("timecard_id", res.data[0]["timecard_id"]).execute()
+    
+    return None
 
 def add_shortage_entry(staff_id, date, amount, reason):
     """
