@@ -1,5 +1,5 @@
 import streamlit as st
-import datetime  # Added to handle timestamps explicitly
+import datetime
 from supabase import create_client, Client
 from twilio.rest import Client as TwilioClient
 
@@ -34,13 +34,12 @@ def punch_in_staff(staff_id):
     """
     Inserts a live timecard record with an explicit local CAT timestamp.
     """
-    # Explicitly generate current time with Central Africa Time offset (+02:00)
     now_cat = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).isoformat()
     
     return supabase.table("timecards").insert({
         "staff_id": staff_id, 
         "is_active": True,
-        "clock_in": now_cat  # Explicitly setting the clock-in timestamp
+        "clock_in": now_cat
     }).execute()
 
 def punch_out_staff(staff_id):
@@ -50,12 +49,11 @@ def punch_out_staff(staff_id):
     res = supabase.table("timecards").select("timecard_id").eq("staff_id", staff_id).eq("is_active", True).execute()
     
     if res.data:
-        # Explicitly generate current time with Central Africa Time offset (+02:00)
         now_cat = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=2))).isoformat()
         
         return supabase.table("timecards").update({
             "is_active": False,
-            "clock_out": now_cat  # Fixed: Now passing the clock-out time to the database
+            "clock_out": now_cat
         }).eq("timecard_id", res.data[0]["timecard_id"]).execute()
     
     return None
@@ -77,17 +75,21 @@ def fetch_shift_summaries():
 def fetch_payroll_summary():
     return supabase.table("v_payroll_summary").select("*").execute().data
 
-def generate_payslip_text(first_name, start_dt, end_dt, hours, gross, shortages, net):
-    date_range_str = f"{start_dt.strftime('%d %b')} to {end_dt.strftime('%d %b')}"
+def generate_payslip_text(first_name, start_dt, end_dt, days_worked, expected_days, hours, gross, shortages, net):
+    """
+    Compact payslip generator with explicit field names.
+    Optimized strictly under 160 characters for single SMS delivery.
+    """
+    date_str = f"{start_dt.strftime('%d')}-{end_dt.strftime('%d %b')}"
+    
     return (
-        f"Mobix Slip: {first_name}\n"
-        f"Dates: {date_range_str}\n"
-        f"------------------\n"
-        f"Hours: {hours:.2f} hrs\n"
-        f"Gross: ZMW {gross:,.2f}\n"
-        f"Shortage: ZMW {shortages:,.2f}\n"
-        f"------------------\n"
-        f"NET PAY: ZMW {net:,.2f}"
+        f"--- MOBIX PAYSLIP ---\n"
+        f"Staff: {first_name}\n"
+        f"Period: {date_str}\n"
+        f"Days: {int(days_worked)}/{int(expected_days)} ({hours:.1f}h)\n"
+        f"Gross: {gross:,.2f}\n"
+        f"Shortage: -{shortages:,.2f}\n"
+        f"NET: ZMW {net:,.2f}"
     )
 
 def send_payslip_sms(phone_number, message_body):
