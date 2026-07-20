@@ -177,7 +177,8 @@ elif page == "Dashboard Overview":
         if not df_shifts_filtered.empty:
             summary_totals = df_shifts_filtered.groupby('staff_id').agg(
                 total_hours=('hours_worked', 'sum'),
-                total_gross_pay=('gross_pay', 'sum')
+                total_gross_pay=('gross_pay', 'sum'),
+                days_worked=('clock_in_date', 'nunique')
             ).reset_index()
             
             df_pay_filtered = df_pay.drop(columns=['total_hours', 'total_gross_pay']).merge(summary_totals, on='staff_id', how='inner')
@@ -192,6 +193,8 @@ elif page == "Dashboard Overview":
             df_pay_filtered['total_deductions'] = df_pay_filtered['total_deductions'].fillna(0.0).astype(float)
             df_pay_filtered['net_pay'] = df_pay_filtered['net_pay'].fillna(0.0).astype(float)
             df_pay_filtered['total_hours'] = df_pay_filtered['total_hours'].fillna(0.0).astype(float)
+            df_pay_filtered['days_worked'] = df_pay_filtered['days_worked'].fillna(0).astype(int)
+            df_pay_filtered['expected_days'] = df_pay_filtered['expected_days'].fillna(0).astype(int)
 
             # DYNAMIC METRICS BLOCKS
             total_gross = df_pay_filtered['total_gross_pay'].sum()
@@ -210,8 +213,8 @@ elif page == "Dashboard Overview":
             st.write("### 🧮 Staff Payroll Sheets Summary")
             df_pay_filtered['Staff Member'] = df_pay_filtered['first_name'] + " " + df_pay_filtered['last_name']
             
-            display_pay = df_pay_filtered[['Staff Member', 'nrc_number', 'total_hours', 'total_gross_pay', 'total_deductions', 'net_pay']].copy()
-            display_pay.columns = ['Staff Member', 'NRC Number', 'Accumulated Hours', 'Gross Pay (ZMW)', 'Shortages (ZMW)', 'Net Payout (ZMW)']
+            display_pay = df_pay_filtered[['Staff Member', 'days_worked', 'expected_days', 'total_hours', 'total_gross_pay', 'total_deductions', 'net_pay']].copy()
+            display_pay.columns = ['Staff Member', 'Days Worked', 'Expected Days', 'Accumulated Hours', 'Gross Pay (ZMW)', 'Shortages (ZMW)', 'Net Payout (ZMW)']
             
             st.dataframe(display_pay, use_container_width=True, hide_index=True)
             
@@ -271,13 +274,15 @@ elif page == "Dashboard Overview":
             sample_row = df_dispatch_pool.iloc[0] if not df_dispatch_pool.empty else None
             if sample_row is not None:
                 sample_text = db.generate_payslip_text(
-                    sample_row['first_name'],
-                    start_date,
-                    end_date,
-                    float(sample_row['total_hours']), 
-                    float(sample_row['total_gross_pay']), 
-                    float(sample_row['total_deductions']), 
-                    float(sample_row['net_pay'])
+                    first_name=sample_row['first_name'],
+                    start_dt=start_date,
+                    end_dt=end_date,
+                    days_worked=int(sample_row['days_worked']),
+                    expected_days=int(sample_row['expected_days']),
+                    hours=float(sample_row['total_hours']), 
+                    gross=float(sample_row['total_gross_pay']), 
+                    shortages=float(sample_row['total_deductions']), 
+                    net=float(sample_row['net_pay'])
                 )
                 char_count = len(sample_text)
                 sms_segments = (char_count // 160) + 1
@@ -317,6 +322,8 @@ elif page == "Dashboard Overview":
                                     first_name=row['first_name'],
                                     start_dt=start_date,
                                     end_dt=end_date,
+                                    days_worked=int(row['days_worked']),
+                                    expected_days=int(row['expected_days']),
                                     hours=float(row['total_hours']),
                                     gross=float(row['total_gross_pay']),
                                     shortages=float(row['total_deductions']),
